@@ -7,12 +7,22 @@ const app = express();
 
 const mongoose = require("mongoose");
 
+const Todo = require("./models/todoSchema");
+
 require("dotenv").config();
 
 const connectToDb = () => {
   mongoose.connect(process.env.MONGO_URI);
   console.log("Connected To Db Successfully");
 };
+
+app.get("/get-todos", async (req, res, next) => {
+  console.log("get-todos route");
+
+  const todos = await Todo.find()
+  console.log(todos);
+  res.status(200).json({ message: "todos fetched successfully", todos: todos })
+})
 
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
