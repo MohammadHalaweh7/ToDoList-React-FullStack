@@ -42,6 +42,19 @@ app.post("/add-todo", async (req, res) => {
     .json({ message: "todos added successfully", todos: createdTodo });
 });
 
+app.patch("/update-todo", async (req, res, next) => {
+  console.log("update-todo route");
+  const { id, done } = req.body;
+  console.log({ id, done });
+
+  const todo = await Todo.findOne({ _id: id });
+  console.log(todo);
+  const updatedTodo = await Todo.updateOne();
+  todo.done = true;
+  todo.save();
+  res.status(200).json({ message: "todos updated successfully", todos: todo });
+});
+
 app.get("/", (req, res) => {
   res.json({ message: "Hello Mohammad from server!" });
 });
