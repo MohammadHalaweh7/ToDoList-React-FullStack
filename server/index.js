@@ -42,7 +42,7 @@ app.post("/add-todo", async (req, res) => {
     .json({ message: "todos added successfully", todos: createdTodo });
 });
 
-app.patch("/update-todo", async (req, res, next) => {
+app.patch("/update-todo", async (req, res) => {
   console.log("update-todo route");
   const { id, done } = req.body;
   console.log({ id, done });
@@ -53,6 +53,15 @@ app.patch("/update-todo", async (req, res, next) => {
   todo.done = true;
   todo.save();
   res.status(200).json({ message: "todos updated successfully", todos: todo });
+});
+
+app.delete("/delete-todo", async (req, res) => {
+  console.log("delete-todos route");
+  const { id } = req.body;
+  console.log(id);
+
+  await Todo.deleteOne({ _id: id });
+  res.status(200).json({ message: "todos deleted successfully" });
 });
 
 app.get("/", (req, res) => {
