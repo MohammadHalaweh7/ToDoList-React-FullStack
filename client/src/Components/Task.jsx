@@ -1,15 +1,15 @@
-import React from "react"
+import React from "react";
 export default function Task({
-  id,
+  _id,
   taskname,
   assignee,
   onComplete,
   onDelete,
-  done
+  done,
 }) {
   return (
-    <div key={id}>
-      <div className='taskDiv d-flex justify-content-between'>
+    <div key={_id}>
+      <div className="taskDiv d-flex justify-content-between">
         <div>
           <p>{taskname}</p>
           <p>{assignee}</p>
@@ -17,24 +17,24 @@ export default function Task({
 
         <div>
           <button
-            onClick={() => onDelete(id)}
-            type='button'
-            className='btn btn-danger d-block mb-2'
+            onClick={() => onDelete(_id)}
+            type="button"
+            className="btn btn-danger d-block mb-2"
           >
-            <i className='fa-solid fa-trash-can'></i>
+            <i className="fa-solid fa-trash-can"></i>
           </button>
 
           {!done ? (
             <button
-              onClick={() => onComplete(id)}
-              type='button'
-              className='btn btn-success'
+              onClick={() => onComplete(_id)}
+              type="button"
+              className="btn btn-success"
             >
-              <i className='fa-solid fa-check'></i>
+              <i className="fa-solid fa-check"></i>
             </button>
           ) : null}
         </div>
       </div>
     </div>
-  )
+  );
 }

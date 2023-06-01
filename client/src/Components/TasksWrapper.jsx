@@ -63,7 +63,13 @@ export default function TasksWrapper() {
     showSuccessPopup();
   }
 
-  function onDelete(id) {
+  const onDelete = async (id) => {
+    const res = await fetch(`http://localhost:3001/delete-todo/${id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+    console.log(data);
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -74,18 +80,10 @@ export default function TasksWrapper() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (!result.isConfirmed) return;
-      const updatedData = dataParsed.filter((element) => element.id !== id);
-      const updatedDataWithIDs = updatedData.map((element, index) => ({
-        ...element,
-        id: index,
-      }));
-
-      setDataParsed(updatedDataWithIDs);
-      const localStorageData = parsingData(updatedDataWithIDs);
-      localStorage.setItem("Tasks", localStorageData);
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
+      showSuccessPopup("Todo Deleted Successfully");
+      fetchGetTodos();
     });
-  }
+  };
 
   useEffect(() => {
     fetchGetTodos();
