@@ -11,7 +11,7 @@ const Todo = require("./models/todoSchema");
 
 require("dotenv").config();
 
-const cors = require("cors")
+const cors = require("cors");
 
 const connectToDb = () => {
   mongoose.connect(process.env.MONGO_URI);
@@ -20,7 +20,7 @@ const connectToDb = () => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 app.get("/get-todos", async (req, res) => {
   console.log("get-todos route");
@@ -47,15 +47,14 @@ app.post("/add-todo", async (req, res) => {
 
 app.patch("/update-todo/:id", async (req, res) => {
   console.log("update-todo route");
-  const { id } = req.params
+  const { id } = req.params;
   const done = req.body.done;
 
   const todo = await Todo.findOne({ _id: id });
-  console.log(todo);
   const updatedTodo = await Todo.updateOne();
-  todo.done = true;
+  todo.done = done;
   todo.save();
-  res.status(200).json({ message: "todos updated successfully", todos: updatedTodo });
+  res.status(200).json({ message: "todos updated successfully", todos: todo });
 });
 
 app.delete("/delete-todo/:id", async (req, res) => {

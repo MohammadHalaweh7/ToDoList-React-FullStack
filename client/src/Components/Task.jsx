@@ -4,6 +4,7 @@ export default function Task({
   taskname,
   assignee,
   onComplete,
+  onNotComplete,
   onDelete,
   done,
 }) {
@@ -11,7 +12,7 @@ export default function Task({
     <div key={_id}>
       <div className="taskDiv d-flex justify-content-between">
         <div>
-          <p>{taskname}</p>
+          <p className={done === true ? "completed" : ""}>{taskname}</p>
           <p>{assignee}</p>
         </div>
 
@@ -32,7 +33,15 @@ export default function Task({
             >
               <i className="fa-solid fa-check"></i>
             </button>
-          ) : null}
+          ) : (
+            <button
+              onClick={() => onNotComplete(_id)}
+              type="button"
+              className="btn btn-success"
+            >
+              <i className="fa-solid fa-times "></i>
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -63,5 +63,9 @@ i
   
 }
 
+.completed {
+  text-decoration: line-through;
+  }
+
 
 

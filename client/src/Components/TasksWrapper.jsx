@@ -48,19 +48,34 @@ export default function TasksWrapper() {
     await fetchGetTodos();
   };
 
-  function onComplete(id) {
-    console.log(id);
-    const updatedData = dataParsed.map((element) => {
-      if (element.id === id) {
-        return { ...element, done: true };
-      }
-      return element;
-    });
+  const onComplete = async (id) => {
+    console.log("Completed")
+    console.log(id)
+    const res = await fetch(`http://localhost:3001/update-todo/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ done: true }),
+    })
+    const data = await res.json()
+    console.log(data)
+    fetchGetTodos()
+  }
 
-    setDataParsed(updatedData);
-    const localStorageData = parsingData(updatedData);
-    localStorage.setItem("Tasks", localStorageData);
-    showSuccessPopup();
+  const onNotComplete = async (id) => {
+    console.log("notCompleted")
+    console.log(id)
+    const res = await fetch(`http://localhost:3001/update-todo/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ done: false }), // Include the 'done' field in the request body
+    })
+    const data = await res.json()
+    console.log(data)
+    fetchGetTodos()
   }
 
   const onDelete = async (id) => {
@@ -89,12 +104,6 @@ export default function TasksWrapper() {
     fetchGetTodos();
   }, []);
 
-  useEffect(() => {
-    setTasksCount(dataParsed.length);
-    setCompletedTasksCount(
-      dataParsed.filter((task) => task.done === true).length
-    );
-  }, [dataParsed]);
 
   return (
     <>
@@ -112,6 +121,7 @@ export default function TasksWrapper() {
             toggle={toggle}
             token={token}
             onComplete={onComplete}
+            onNotComplete={onNotComplete}
             onDelete={onDelete}
           />
         </div>
