@@ -5,11 +5,7 @@ import AddTaskModal from "./AddTaskModal";
 import Swal from "sweetalert2";
 
 export default function TasksWrapper() {
-  const [dataParsed, setDataParsed] = useState([
-    { id: 0, taskname: "Hello", assignee: "World", done: false },
-    { id: 1, taskname: "Hello2", assignee: "World2", done: true },
-  ]);
-  const [isData, setIsData] = useState(false);
+  const [dataParsed, setDataParsed] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [token, setToken] = useState("");
   const [tasksCount, setTasksCount] = useState(dataParsed.length);
@@ -25,15 +21,20 @@ export default function TasksWrapper() {
     return JSON.stringify(data);
   };
 
-  function getDataFromLocalStorage() {
-    const jsonFormatData = localStorage.getItem("Tasks");
-    console.log(jsonFormatData);
-    if (jsonFormatData) {
-      const todos = JSON.parse(jsonFormatData);
-      setDataParsed(todos);
-      setIsData(true);
-    }
-  }
+  const fetchGetTodos = async () => {
+    const res = await fetch("http://localhost:3001/get-todos");
+    const data = await res.json();
+    console.log(data.todos);
+    setTasksCount(dataParsed.reduce((acc) => acc + 1, 0));
+    setCompletedTasksCount(
+      dataParsed.filter((task) => task.done === true).length
+    );
+    setCompletedTasksCount(
+      dataParsed.reduce((count, task) => (task.done ? count + 1 : count), 0)
+    );
+
+    return setDataParsed(data.todos);
+  };
 
   function onAddClick(taskname, assignee) {
     let dataObject = {
@@ -64,7 +65,6 @@ export default function TasksWrapper() {
     const localStorageData = parsingData(updatedData);
     localStorage.setItem("Tasks", localStorageData);
     showSuccessPopup();
-    setIsData(false);
   }
 
   function onDelete(id) {
@@ -88,14 +88,12 @@ export default function TasksWrapper() {
       const localStorageData = parsingData(updatedDataWithIDs);
       localStorage.setItem("Tasks", localStorageData);
       Swal.fire("Deleted!", "Your file has been deleted.", "success");
-      setIsData(false);
-      setIsData(true); // Trigger re-render
     });
   }
 
   useEffect(() => {
-    getDataFromLocalStorage();
-  }, [isData]);
+    fetchGetTodos();
+  }, []);
 
   useEffect(() => {
     setTasksCount(dataParsed.length);
