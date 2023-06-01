@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Modal({ onAddClick }) {
   const [taskname, setTaskName] = useState();
@@ -55,7 +56,9 @@ export default function Modal({ onAddClick }) {
               className="btn btn-primary"
               data-bs-dismiss="modal"
               onClick={() => {
-                onAddClick(taskname, assignee);
+                if (!taskname) Swal.fire("no taskname provided please add one");
+                if (!assignee) Swal.fire("no assignee provided please add one");
+                if (taskname && assignee) onAddClick(taskname, assignee);
               }}
             >
               Add

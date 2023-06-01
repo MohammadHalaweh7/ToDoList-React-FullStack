@@ -8,13 +8,11 @@ export default function TasksWrapper() {
   const [dataParsed, setDataParsed] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [token, setToken] = useState("");
-  const [tasksCount, setTasksCount] = useState(dataParsed.length);
-  const [completedTasksCount, setCompletedTasksCount] = useState(
-    dataParsed.filter((task) => task.done === true).length
-  );
+  const [tasksCount, setTasksCount] = useState(0);
+  const [completedTasksCount, setCompletedTasksCount] = useState(0);
 
-  function showSuccessPopup() {
-    Swal.fire("Good job!", "You clicked the button!", "success");
+  function showSuccessPopup(message) {
+    Swal.fire(message);
   }
 
   const parsingData = (data) => {
@@ -36,21 +34,19 @@ export default function TasksWrapper() {
     return setDataParsed(data.todos);
   };
 
-  function onAddClick(taskname, assignee) {
-    let dataObject = {
-      id: dataParsed.length,
-      done: false,
-      taskname,
-      assignee,
-    };
-
-    const updatedData = [...dataParsed, dataObject];
-    const localStorageData = parsingData(updatedData);
-
-    setDataParsed(updatedData);
-    localStorage.setItem("Tasks", localStorageData);
-    showSuccessPopup();
-  }
+  const onAddClick = async (taskname, assignee) => {
+    console.log("onaddclick");
+    const addTodo = await fetch("http://localhost:3001/add-todo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ taskname, assignee }),
+    });
+    console.log(addTodo);
+    showSuccessPopup("Todo Added Successfully");
+    await fetchGetTodos();
+  };
 
   function onComplete(id) {
     console.log(id);
