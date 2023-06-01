@@ -8,29 +8,17 @@ export default function TasksWrapper() {
   const [dataParsed, setDataParsed] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [token, setToken] = useState("");
-  const [tasksCount, setTasksCount] = useState(0);
+  const [notCompletedTasksCount, setNotCompletedTaskCount] = useState(0);
   const [completedTasksCount, setCompletedTasksCount] = useState(0);
 
   function showSuccessPopup(message) {
     Swal.fire(message);
   }
 
-  const parsingData = (data) => {
-    return JSON.stringify(data);
-  };
-
   const fetchGetTodos = async () => {
     const res = await fetch("http://localhost:3001/get-todos");
     const data = await res.json();
     console.log(data.todos);
-    setTasksCount(dataParsed.reduce((acc) => acc + 1, 0));
-    setCompletedTasksCount(
-      dataParsed.filter((task) => task.done === true).length
-    );
-    setCompletedTasksCount(
-      dataParsed.reduce((count, task) => (task.done ? count + 1 : count), 0)
-    );
-
     return setDataParsed(data.todos);
   };
 
@@ -104,6 +92,14 @@ export default function TasksWrapper() {
     fetchGetTodos();
   }, []);
 
+  useEffect(() => {
+    setNotCompletedTaskCount(
+      dataParsed.reduce((count, task) => (!task.done ? count + 1 : count), 0)
+    )
+    setCompletedTasksCount(
+      dataParsed.reduce((count, task) => (task.done ? count + 1 : count), 0)
+    )
+  })
 
   return (
     <>
@@ -113,7 +109,7 @@ export default function TasksWrapper() {
           <TasksControls
             setToggle={setToggle}
             setToken={setToken}
-            tasksCount={tasksCount}
+            notCompletedTasksCount={notCompletedTasksCount}
             completedTasksCount={completedTasksCount}
           />
           <TaskList

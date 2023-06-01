@@ -3,7 +3,7 @@ import React from "react"
 export default function TasksControl({
   setToggle,
   setToken,
-  tasksCount,
+  notCompletedTasksCount,
   completedTasksCount,
 }) {
   return (
@@ -35,7 +35,7 @@ export default function TasksControl({
           ></input>
         </div>
         <b>
-          TODO: {tasksCount} &nbsp;Confirmed: {completedTasksCount}
+          TODO: {notCompletedTasksCount} &nbsp;Confirmed: {completedTasksCount}
         </b>
 
         <div>
