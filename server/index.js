@@ -11,6 +11,8 @@ const Todo = require("./models/todoSchema");
 
 require("dotenv").config();
 
+const cors = require("cors")
+
 const connectToDb = () => {
   mongoose.connect(process.env.MONGO_URI);
   console.log("Connected To Db Successfully");
@@ -18,6 +20,7 @@ const connectToDb = () => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors())
 
 app.get("/get-todos", async (req, res) => {
   console.log("get-todos route");
@@ -42,22 +45,22 @@ app.post("/add-todo", async (req, res) => {
     .json({ message: "todos added successfully", todos: createdTodo });
 });
 
-app.patch("/update-todo", async (req, res) => {
+app.patch("/update-todo/:id", async (req, res) => {
   console.log("update-todo route");
-  const { id, done } = req.body;
-  console.log({ id, done });
+  const { id } = req.params
+  const done = req.body.done;
 
   const todo = await Todo.findOne({ _id: id });
   console.log(todo);
   const updatedTodo = await Todo.updateOne();
   todo.done = true;
   todo.save();
-  res.status(200).json({ message: "todos updated successfully", todos: todo });
+  res.status(200).json({ message: "todos updated successfully", todos: updatedTodo });
 });
 
-app.delete("/delete-todo", async (req, res) => {
+app.delete("/delete-todo/:id", async (req, res) => {
   console.log("delete-todos route");
-  const { id } = req.body;
+  const { id } = req.params;
   console.log(id);
 
   await Todo.deleteOne({ _id: id });
